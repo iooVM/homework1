@@ -9,7 +9,6 @@ import pandas as pd
 # Для глубокого копирования словаря
 import copy
 
-
 '''
  TODO:
     1. разделить все функции на:
@@ -26,7 +25,6 @@ import copy
 # ----------------------------------------------------------------------------------------
 
 # Глобальные переменные
-# TODO: Перенести в виртуальное окружение или в ini файл
 
 # ширина окна
 WINDOW_WIDTH = 180
@@ -49,7 +47,7 @@ callbook_file_json = 'callbook.json'
 
 
 # Чтение из json файла
-def read_file_json(filename):
+def read_file_json(filename: str) -> list:
     if os.path.exists(filename):
         with open(filename, 'r', encoding='utf-8') as json_file:
             return json.load(json_file)
@@ -57,7 +55,7 @@ def read_file_json(filename):
 
 
 # запись в json файла, добавление нет, только перезаписать файл
-def write_file_json(filename, write_text):
+def write_file_json(filename: str, write_text: list):
     with open(filename, 'w', encoding='UTF-8') as json_file:
         # Сортируем список словарей по имени
         write_text = sorted(write_text, key=lambda x: x["name"])
@@ -65,10 +63,9 @@ def write_file_json(filename, write_text):
 
 
 # очистить содержимое файла
-def clear_file_json(filename):
+def clear_file_json(filename: str):
     with open(filename, 'w', encoding='UTF-8') as json_file:
         json.dump([], json_file, ensure_ascii=False, indent=4)
-        pass
 
 
 # конец раздел функций получения данных
@@ -80,7 +77,7 @@ def clear_file_json(filename):
 
 
 # Случайная Генерация контакта
-def generate_fake_user():
+def generate_fake_user() -> dict:
     fake = Faker('ru_RU')
 
     return {
@@ -90,14 +87,13 @@ def generate_fake_user():
     }
 
 
-def callbook_clear(filename):
+def callbook_clear(filename: str):
     clear_file_json(filename)
 
 
 # найти контакт
-# TODO: Переделать в callbook_find_menu
-# TODO: функционал перенести в новую callbook_find
-def callbook_find(filename, search_area):
+
+def callbook_find(filename: str, search_area: str) -> list:
     data = read_file_json(filename)
     if search_area.lower() == 'p':
         callbook_show_all(callbook_file_json)
@@ -119,7 +115,7 @@ def callbook_find(filename, search_area):
 
 
 # удалить контакт
-def callbook_del(filename, del_record):
+def callbook_del(filename: str, del_record: dict):
     data = read_file_json(filename)
     data.remove(del_record)
     write_file_json(filename, data)
@@ -133,7 +129,7 @@ def callbook_del(filename, del_record):
 # 3. интерфейсы общения с пользователем ( console, GUI, WEB и т.п.)
 
 # прочитать справочник
-def callbook_show_all(filename):
+def callbook_show_all(filename: str):
     data = read_file_json(filename)
     df = pd.DataFrame(data)
     print('-' * WINDOW_WIDTH)
@@ -143,7 +139,7 @@ def callbook_show_all(filename):
 
 # меню поиска контакта
 
-def callbook_find_menu(filename):
+def callbook_find_menu(filename: str) -> list:
     # data = read_file_json(filename)
     print("'n'   - (name) Искать по имени ")
     print("'pn'  - (phone number) Искать по номеру телефона  ")
@@ -153,12 +149,11 @@ def callbook_find_menu(filename):
 
 
 # добавить в справочник
-# TODO: Переделать в callbook_add_menu
-# TODO: функционал перенести в новую callbook_add
-def callbook_add(filename):
-    data = read_file_json(filename)
 
-    while True:
+def callbook_add(filename: str):
+    data = read_file_json(filename)
+    choice = ''
+    while choice != 'e':
         # Ввод данных от пользователя
         print('-' * WINDOW_WIDTH)
         print("'g'  - (generate) Сгенерировать случайно")
@@ -174,18 +169,16 @@ def callbook_add(filename):
             break
         elif choice.lower() == 'w':
             write_file_json(filename, data)
-            continue
-        elif choice.lower() == 'e':
-            break
+
         elif choice.lower() == 'g':
             record = generate_fake_user()
             data.append(record)
             print(f"Запись сгенерирована : {list(map(lambda x: x, record.values()))}")
             # print(record)
-            continue
+
         elif choice.lower() == 'p':
             callbook_show_all(callbook_file_json)
-            continue
+
         elif choice.lower() == 'a':
             name = input("Введите имя  : ")
             phone_number = input("Введите номер телефона : ")
@@ -204,10 +197,10 @@ def callbook_add(filename):
 
 
 # Основное меню
-# TODO: Меню изменение вынести в отдельную функцию
-# TODO: Изменение вынести в отдельную функцию
+
 def menu():
-    while True:
+    choice = ''
+    while choice != 'e':
         # Ввод данных от пользователя
         print('-' * WINDOW_WIDTH)
         print('e - (exit) Выход')
@@ -219,11 +212,9 @@ def menu():
         choice = input("Что делаем ? : ")
         print('-' * WINDOW_WIDTH)
 
-        if choice == 'e':
-            break
-        elif choice == 'p':
+        if choice == 'p':
             callbook_show_all(callbook_file_json)
-            continue
+
         elif choice == 'a':
             callbook_add(callbook_file_json)
 
