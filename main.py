@@ -248,7 +248,7 @@ def menu():
                         data.append(rename_record)
                         write_file_json(callbook_file_json, data)
 
-                if choice3 == 'pn':
+                elif choice3 == 'pn':
                     new_name = input("введите новый номер телефона ")
                     rename_record = copy.deepcopy(find_record[0])
                     rename_record['phone_number'] = new_name
@@ -260,7 +260,7 @@ def menu():
                         data.append(rename_record)
                         write_file_json(callbook_file_json, data)
 
-                if choice3 == 'c':
+                elif choice3 == 'c':
                     new_name = input("Введите новую компанию ")
                     rename_record = copy.deepcopy(find_record[0])
                     rename_record['company'] = new_name
